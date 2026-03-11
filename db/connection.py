@@ -3,6 +3,7 @@ from sqlalchemy import create_engine
 from os import getenv
 from pathlib import Path
 from dotenv import load_dotenv
+from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
 logger.info("db/connection.py")
@@ -16,3 +17,10 @@ if db_url == "":
 print(db_url)
 
 engine = create_engine(db_url, echo=True)
+
+def get_db():
+    db = Session(engine)
+    try:
+        yield db
+    finally:
+        db.close()
