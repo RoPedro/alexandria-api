@@ -1,0 +1,41 @@
+from fastapi import APIRouter, Depends
+from db.connection import get_db
+from sqlalchemy.orm import Session
+
+from controllers.v1 import ctrlsAuthor
+from schemas.author import Author as AuthorSchema
+
+router = APIRouter(prefix="/authors", tags=["authors"])
+
+@router.get(
+    "/",
+)
+def getAll(
+    db: Session = Depends(get_db)
+):
+    authors = ctrlsAuthor.getAll(db)   
+    return authors
+
+@router.post(
+    "/add"
+)
+def authorAdd(
+    data: AuthorSchema, db: Session = Depends(get_db)
+):
+    return ctrlsAuthor.add(db, data.first_name, data.last_name)
+
+@router.put(
+    "/update/{author_id}"
+)
+def authorUpdate(
+    data: AuthorSchema, author_id: int, db: Session = Depends(get_db)
+):
+    return ctrlsAuthor.patch(db, author_id, data.first_name, data.last_name)
+
+@router.delete(
+    "/delete/{author_id}"
+)
+def authorDelete(
+    author_id: int, db: Session = Depends(get_db)
+):
+    return ctrlsAuthor.remove(db, author_id)

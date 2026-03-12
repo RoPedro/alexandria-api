@@ -1,10 +1,12 @@
 import logging
-from fastapi import FastAPI as fapi, Depends
+from fastapi import FastAPI, Depends, APIRouter
+from db.connection import get_db
+from sqlalchemy.orm import Session
+
 from controllers.v1 import ctrlsGenre
 from seeds import createTables
 from schemas import genre as genreSchema
-from db.connection import get_db
-from sqlalchemy.orm import Session
+from routes import authors as routerAuthors
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -15,13 +17,19 @@ logger = logging.getLogger(__name__)
 
 createTables()
 
-app = fapi()
+app = FastAPI()
 apiVer1 = "/api/v1"
+
+apiRouter = APIRouter()
 
 @app.get("/")
 def root():
     return {"hello world"}
 
+apiRouter.include_router(routerAuthors.router)
+'''
+--------- START OF GENRES ROUTES -----------
+'''
 @app.get(apiVer1)
 def version():
     return {"Version one!"}
@@ -51,3 +59,9 @@ def genreDelete(
     db: Session = Depends(get_db)
 ):
     return ctrlsGenre.remove(db, genre_id)
+
+'''
+------------- END OF GENRES ROUTES ------------
+'''
+
+app.include_router(apiRouter, prefix=apiVer1)
