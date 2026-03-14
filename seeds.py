@@ -1,11 +1,11 @@
 from sqlalchemy.orm import Session
+from datetime import date
 
 from db.connection import engine
 import models.v1 as v1
 
 with Session(bind=engine) as session:
     genresList = [
-        v1.Genre(name="fiction"),
         v1.Genre(name="fantasy"),
         v1.Genre(name="sci-fi"),
         v1.Genre(name="non-fiction"),
@@ -14,5 +14,59 @@ with Session(bind=engine) as session:
 
     for genre in genresList:
         session.add(genre)
-        session.commit()
-        session.refresh(genre)
+    session.commit() # Commit outside the loop, so we commit all genres at once.
+
+    authorsList = [
+        v1.Author(firstname="Thomas H.", lastname="Cormen"),
+        v1.Author(firstname="Ronald L.", lastname="Rivest"),
+        v1.Author(firstname="J.R.R.", lastname="Tolkien"),
+        v1.Author(firstname="Isaac", lastname="Asimov"),
+        v1.Author(firstname="Rick", lastname="Riordan"),
+        v1.Author(firstname="Jane", lastname="Austen"),
+    ]
+
+    for author in authorsList:
+        session.add(author)
+    session.commit()
+
+    booksList = [
+        v1.Book(
+            isbn="978-0262033848",
+            title="Introduction to Algorithms",
+            description="A comprehensive textbook on algorithms.",
+            release_date=date(2022, 4, 5),
+            genre_id=genresList[2].id,  # non-fiction (1-n: just set the FK)
+            authors=[
+                authorsList[0],
+                authorsList[1],
+            ],  # Cormen + Rivest (n-n: assign the list)
+        ),
+        v1.Book(
+            isbn="978-0618640157",
+            title="The Lord of the Rings",
+            description="An epic fantasy trilogy.",
+            release_date=date(1954, 7, 29),
+            genre_id=genresList[0].id,  # fantasy
+            authors=[authorsList[2]],  # Tolkien
+        ),
+        v1.Book(
+            isbn="978-0553293357",
+            title="Foundation",
+            description="A science fiction classic.",
+            release_date=date(1951, 5, 1),
+            genre_id=genresList[1].id,  # sci-fi
+            authors=[authorsList[3]],  # Asimov
+        ),
+        v1.Book(
+            isbn="978-0141439518",
+            title="Pride and Prejudice",
+            description="A romantic novel following Elizabeth Bennet and Mr. Darcy.",
+            release_date=date(1813, 1, 28),
+            genre_id=genresList[3].id,  # romance
+            authors=[authorsList[5]],  # Jane Austen
+        ),
+    ]
+
+    for book in booksList:
+        session.add(book)
+    session.commit()
