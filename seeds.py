@@ -1,12 +1,18 @@
+from sqlalchemy.orm import Session
+
 from db.connection import engine
-from os import getenv
 import models.v1 as v1
-from dotenv import load_dotenv
 
-load_dotenv()
-env = getenv('ENV')
+with Session(bind=engine) as session:
+    genresList = [
+        v1.Genre(name="fiction"),
+        v1.Genre(name="fantasy"),
+        v1.Genre(name="sci-fi"),
+        v1.Genre(name="non-fiction"),
+        v1.Genre(name="romance"),
+    ]
 
-def createTables():
-    v1.Base.metadata.create_all(engine)
-        
- 
+    for genre in genresList:
+        session.add(genre)
+        session.commit()
+        session.refresh(genre)

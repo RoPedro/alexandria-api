@@ -4,7 +4,7 @@ from db.connection import get_db
 from sqlalchemy.orm import Session
 
 from controllers.v1 import ctrlsGenre
-from seeds import createTables
+from models.v1.dec_base import createTables
 from schemas import genre as genreSchema
 from routes import authors as routerAuthors
 
