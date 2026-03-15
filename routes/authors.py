@@ -8,13 +8,22 @@ from schemas.author import Author as AuthorSchema
 router = APIRouter(prefix="/authors", tags=["authors"])
 
 @router.get(
-    "/",
+    "/"
 )
 def getAll(
     db: Session = Depends(get_db)
 ):
     authors = ctrlsAuthor.getAll(db)   
     return authors
+    
+@router.get(
+    "/{author_id}"
+)
+def getAuthor(
+     author_id: int, db: Session = Depends(get_db)
+):
+    author = ctrlsAuthor.get(db, author_id)
+    return author
 
 @router.post(
     "/add"
