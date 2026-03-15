@@ -1,28 +1,29 @@
-from sqlalchemy.orm import Session
 from datetime import date
 
+from sqlalchemy.orm import Session
+
+from models.v1 import Genre, Author, Book
 from db.connection import engine
-import models.v1 as v1
 
 with Session(bind=engine) as session:
     genresList = [
-        v1.Genre(name="fantasy"),
-        v1.Genre(name="sci-fi"),
-        v1.Genre(name="non-fiction"),
-        v1.Genre(name="romance"),
+        Genre(name="fantasy"),
+        Genre(name="sci-fi"),
+        Genre(name="non-fiction"),
+        Genre(name="romance"),
     ]
 
     for genre in genresList:
         session.add(genre)
-    session.commit() # Commit outside the loop, so we commit all genres at once.
+    session.commit()  # Commit outside the loop, so we commit all genres at once.
 
     authorsList = [
-        v1.Author(firstname="Thomas H.", lastname="Cormen"),
-        v1.Author(firstname="Ronald L.", lastname="Rivest"),
-        v1.Author(firstname="J.R.R.", lastname="Tolkien"),
-        v1.Author(firstname="Isaac", lastname="Asimov"),
-        v1.Author(firstname="Rick", lastname="Riordan"),
-        v1.Author(firstname="Jane", lastname="Austen"),
+        Author(firstname="Thomas H.", lastname="Cormen"),
+        Author(firstname="Ronald L.", lastname="Rivest"),
+        Author(firstname="J.R.R.", lastname="Tolkien"),
+        Author(firstname="Isaac", lastname="Asimov"),
+        Author(firstname="Rick", lastname="Riordan"),
+        Author(firstname="Jane", lastname="Austen"),
     ]
 
     for author in authorsList:
@@ -30,7 +31,7 @@ with Session(bind=engine) as session:
     session.commit()
 
     booksList = [
-        v1.Book(
+        Book(
             isbn="978-0262033848",
             title="Introduction to Algorithms",
             description="A comprehensive textbook on algorithms.",
@@ -41,7 +42,7 @@ with Session(bind=engine) as session:
                 authorsList[1],
             ],  # Cormen + Rivest (n-n: assign the list)
         ),
-        v1.Book(
+        Book(
             isbn="978-0618640157",
             title="The Lord of the Rings",
             description="An epic fantasy trilogy.",
@@ -49,7 +50,7 @@ with Session(bind=engine) as session:
             genre_id=genresList[0].id,  # fantasy
             authors=[authorsList[2]],  # Tolkien
         ),
-        v1.Book(
+        Book(
             isbn="978-0553293357",
             title="Foundation",
             description="A science fiction classic.",
@@ -57,7 +58,7 @@ with Session(bind=engine) as session:
             genre_id=genresList[1].id,  # sci-fi
             authors=[authorsList[3]],  # Asimov
         ),
-        v1.Book(
+        Book(
             isbn="978-0141439518",
             title="Pride and Prejudice",
             description="A romantic novel following Elizabeth Bennet and Mr. Darcy.",
