@@ -1,5 +1,6 @@
 import logging
 from fastapi import FastAPI, Depends, APIRouter
+from sqlalchemy.event import api
 from db.connection import get_db
 from sqlalchemy.orm import Session
 
@@ -38,6 +39,13 @@ def version():
 def genres():
     genres = ctrlsGenre.getAll()
     return genres
+
+@app.get(f"{apiVer1}/genre/{{genre_id}}") 
+def get(
+    genre_id: int, db: Session = Depends(get_db)
+):
+    genre = ctrlsGenre.get(db, genre_id)
+    return genre
 
 @app.post(f"{apiVer1}/genre/add")
 def genreAdd(
