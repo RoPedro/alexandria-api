@@ -1,6 +1,5 @@
 import logging
 from fastapi import FastAPI, Depends, APIRouter
-from sqlalchemy.event import api
 from db.connection import get_db
 from sqlalchemy.orm import Session
 
@@ -8,6 +7,7 @@ from controllers.v1 import ctrlsGenre
 from models.v1.dec_base import createTables
 from schemas import genre as genreSchema
 from routes import authors as routerAuthors
+from routes import books as routerBooks
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -28,6 +28,7 @@ def root():
     return {"hello world"}
 
 apiRouter.include_router(routerAuthors.router)
+apiRouter.include_router(routerBooks.router)
 '''
 --------- START OF GENRES ROUTES -----------
 '''
