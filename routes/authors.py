@@ -20,7 +20,7 @@ def getAll(
     "/{author_id}"
 )
 def getAuthor(
-     author_id: int, db: Session = Depends(get_db)
+    author_id: int, db: Session = Depends(get_db)
 ):
     author = ctrlsAuthor.get(db, author_id)
     return author
@@ -31,7 +31,7 @@ def getAuthor(
 def authorAdd(
     data: AuthorSchema, db: Session = Depends(get_db)
 ):
-    return ctrlsAuthor.add(db, data.first_name, data.last_name)
+    return ctrlsAuthor.add(db, data.firstname, data.lastname)
 
 @router.put(
     "/update/{author_id}"
@@ -39,7 +39,7 @@ def authorAdd(
 def authorUpdate(
     data: AuthorSchema, author_id: int, db: Session = Depends(get_db)
 ):
-    return ctrlsAuthor.patch(db, author_id, data.first_name, data.last_name)
+    return ctrlsAuthor.patch(db, author_id, data.firstname, data.lastname)
 
 @router.delete(
     "/delete/{author_id}"
