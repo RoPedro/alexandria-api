@@ -1,21 +1,17 @@
 import logging
-from fastapi import FastAPI, Depends, APIRouter
-from db.connection import get_db
-from sqlalchemy.orm import Session
+from fastapi import FastAPI, APIRouter
 
-from controllers.v1 import ctrlsGenre
 from models.v1.dec_base import createTables
-from schemas import genre as genreSchema
 from routes import (
     authors as routerAuthors,
     books as routerBooks,
-    genres as routerGenres
+    genres as routerGenres,
 )
 
 logging.basicConfig(
     level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    force=True
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    force=True,
 )
 logger = logging.getLogger(__name__)
 
@@ -25,10 +21,6 @@ app = FastAPI()
 apiVer1 = "/api/v1"
 
 apiRouter = APIRouter()
-
-@app.get("/")
-def root():
-    return {"hello world"}
 
 apiRouter.include_router(routerBooks.router)
 apiRouter.include_router(routerAuthors.router)

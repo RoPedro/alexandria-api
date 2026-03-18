@@ -5,7 +5,6 @@ from sqlalchemy.orm import Session
 from controllers.v1 import ctrlsGenre
 from schemas.genre import *
 
-
 router = APIRouter(prefix="/genres", tags=["genres"])
 
 

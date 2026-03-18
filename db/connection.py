@@ -10,13 +10,14 @@ logger.info("db/connection.py")
 
 load_dotenv()
 
-db_url = getenv('DB_URL', default='')
+db_url = getenv("DB_URL", default="")
 if db_url == "":
     db_url = f"sqlite:///{Path.cwd()}/db/bookapi-fast.db"
 
 print(db_url)
 
 engine = create_engine(db_url, echo=True)
+
 
 def get_db():
     db = Session(engine)
