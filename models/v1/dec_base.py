@@ -13,6 +13,7 @@ class Base(DeclarativeBase):
 load_dotenv()
 env = getenv("ENV")
 
+
 def createTables():
     if env != "production":
         v1.Base.metadata.create_all(engine)

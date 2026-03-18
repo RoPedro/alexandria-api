@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from datetime import date
-#from typing import List
 
 from schemas.genre import GenreCreate
 from schemas.author import Author
