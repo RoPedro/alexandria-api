@@ -10,6 +10,10 @@ def getAll(db: Session):
     authors = db.execute(stmt).scalars().all()
     
     return authors
+    
+def get(db: Session,  author_id: int):
+    author = db.get(Author, author_id)
+    return author
 
 def add(db: Session, first_name: str, last_name: str):
     author = Author(firstname=first_name, lastname=last_name)

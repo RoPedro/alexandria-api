@@ -13,6 +13,10 @@ def getAll():
     
     logger.debug(f"DEBUG: ALL GENRES{genres}")
     return genres
+    
+def get(db: Session, genre_id: int):
+    genre = db.get(Genre, genre_id)
+    return genre
 
 def add(db: Session, genre_name: str):
     genre = Genre(name=genre_name)

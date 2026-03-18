@@ -4,9 +4,10 @@ from db.connection import get_db
 from sqlalchemy.orm import Session
 
 from controllers.v1 import ctrlsGenre
-from seeds import createTables
+from models.v1.dec_base import createTables
 from schemas import genre as genreSchema
 from routes import authors as routerAuthors
+from routes import books as routerBooks
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -27,6 +28,7 @@ def root():
     return {"hello world"}
 
 apiRouter.include_router(routerAuthors.router)
+apiRouter.include_router(routerBooks.router)
 '''
 --------- START OF GENRES ROUTES -----------
 '''
@@ -38,6 +40,13 @@ def version():
 def genres():
     genres = ctrlsGenre.getAll()
     return genres
+
+@app.get(f"{apiVer1}/genre/{{genre_id}}") 
+def get(
+    genre_id: int, db: Session = Depends(get_db)
+):
+    genre = ctrlsGenre.get(db, genre_id)
+    return genre
 
 @app.post(f"{apiVer1}/genre/add")
 def genreAdd(
