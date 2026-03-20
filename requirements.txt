@@ -2,3 +2,4 @@ fastapi
 "fastapi[standard]"
 sqlalchemy
 sqlalchemy-utils
+pytest
