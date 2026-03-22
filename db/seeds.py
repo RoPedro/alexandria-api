@@ -4,6 +4,9 @@ from sqlalchemy.orm import Session
 
 from models.v1 import Genre, Author, Book
 from db.connection import engine
+from models.v1.dec_base import createTables
+
+createTables()
 
 with Session(bind=engine) as session:
     genresList = [
