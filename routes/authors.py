@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from controllers.v1 import ctrlsAuthor
 from schemas.author import Author as AuthorSchema
+from .utils import validate_request_details
 
 router = APIRouter(prefix="/authors", tags=["authors"])
 
@@ -17,6 +18,7 @@ def getAll(db: Session = Depends(get_db)):
 @router.get("/{author_id}")
 def getAuthor(author_id: int, db: Session = Depends(get_db)):
     author = ctrlsAuthor.get(db, author_id)
+    validate_request_details(author_id, author)
     return author
 
 
@@ -27,9 +29,13 @@ def authorAdd(data: AuthorSchema, db: Session = Depends(get_db)):
 
 @router.put("/update/{author_id}")
 def authorUpdate(data: AuthorSchema, author_id: int, db: Session = Depends(get_db)):
+    author = ctrlsAuthor.get(db, author_id)
+    validate_request_details(author_id, author)
     return ctrlsAuthor.patch(db, author_id, data.firstname, data.lastname)
 
 
 @router.delete("/delete/{author_id}")
 def authorDelete(author_id: int, db: Session = Depends(get_db)):
+    author = ctrlsAuthor.get(db, author_id)
+    validate_request_details(author_id, author)
     return ctrlsAuthor.remove(db, author_id)
