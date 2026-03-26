@@ -14,8 +14,7 @@ with Session(bind=engine) as session:
         Genre(name="romance"),
     ]
 
-    for genre in genresList:
-        session.add(genre)
+    session.add_all(genresList)
     session.commit()  # Commit outside the loop, so we commit all genres at once.
 
     authorsList = [
@@ -27,9 +26,8 @@ with Session(bind=engine) as session:
         Author(firstname="Jane", lastname="Austen"),
     ]
 
-    for author in authorsList:
-        session.add(author)
-    session.commit()
+    session.add_all(genresList)
+    session.commit()  # Commit outside the loop, so we commit all genres at once.
 
     booksList = [
         Book(
@@ -69,6 +67,5 @@ with Session(bind=engine) as session:
         ),
     ]
 
-    for book in booksList:
-        session.add(book)
-    session.commit()
+    session.add_all(booksList)
+    session.commit()  # Commit outside the loop, so we commit all genres at once.
