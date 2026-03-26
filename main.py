@@ -1,7 +1,6 @@
 import logging
 from fastapi import FastAPI, APIRouter
 
-from models.v1.dec_base import createTables
 from routes import (
     authors as routerAuthors,
     books as routerBooks,
@@ -15,7 +14,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-createTables()
 
 app = FastAPI()
 apiVer1 = "/api/v1"
