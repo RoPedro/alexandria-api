@@ -82,6 +82,7 @@ venv/
 
 # Database stuff:
 *.db
+/db/*.db
 
 # Python mode for VIM
 .ropeproject
