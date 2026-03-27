@@ -1,8 +1,10 @@
+import logging
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+
 from db.connection import engine
 from models.v1.genre import Genre
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -23,12 +25,13 @@ def get(db: Session, genre_id: int):
 
 def add(db: Session, genre_name: str):
     genre = Genre(name=genre_name)
-
     db.add(genre)
-    db.commit()
-    db.refresh(genre)
-
-    return genre
+    try:
+        db.commit()
+        db.refresh(genre)
+        return genre
+    except IntegrityError: # Return none in case of duplicate genre_name
+        return None
 
 
 def patch(db: Session, genre_id: int, new_name: str):

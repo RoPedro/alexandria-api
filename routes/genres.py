@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from db.connection import get_db
 from sqlalchemy.orm import Session
 
@@ -24,7 +24,10 @@ def get(genre_id: int, db: Session = Depends(get_db)):
 
 @router.post("/add")
 def genreAdd(data: GenreCreate, db: Session = Depends(get_db)):
-    return ctrlsGenre.add(db, data.name)
+    genre = ctrlsGenre.add(db, data.name)
+    if genre is None:
+        raise HTTPException(status_code=409, detail="Genre already exists")
+    return genre
 
 
 @router.put("/update/{genre_id}")
