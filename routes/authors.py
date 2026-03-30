@@ -3,7 +3,7 @@ from db.connection import get_db
 from sqlalchemy.orm import Session
 
 from controllers.v1 import ctrlsAuthor
-from schemas.author import Author as AuthorSchema
+import schemas.author as AuthorSchema
 from .utils import validate_request_details
 
 router = APIRouter(prefix="/authors", tags=["authors"])
@@ -23,12 +23,12 @@ def getAuthor(author_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/add")
-def authorAdd(data: AuthorSchema, db: Session = Depends(get_db)):
+def authorAdd(data: AuthorSchema.AuthorPost, db: Session = Depends(get_db)):
     return ctrlsAuthor.add(db, data.firstname, data.lastname)
 
 
 @router.put("/update/{author_id}")
-def authorUpdate(data: AuthorSchema, author_id: int, db: Session = Depends(get_db)):
+def authorUpdate(data: AuthorSchema.Author, author_id: int, db: Session = Depends(get_db)):
     author = ctrlsAuthor.get(db, author_id)
     validate_request_details(author_id, author)
     return ctrlsAuthor.patch(db, author_id, data.firstname, data.lastname)
