@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from controllers.v1 import ctrlsBook
 from schemas.book import BookBase
+from .utils import validate_request_details
 
 router = APIRouter(prefix="/books", tags=["books"])
 
@@ -17,4 +18,5 @@ def getAll(db: Session = Depends(get_db)):
 @router.get("/{book_id}", response_model=BookBase)
 def getBook(book_id: int, db: Session = Depends(get_db)):
     book = ctrlsBook.get(book_id, db)
+    validate_request_details(book_id, book)
     return book
