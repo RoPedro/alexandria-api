@@ -3,4 +3,4 @@ sqlalchemy
 sqlalchemy-utils
 pytest
 alembic
-psycopg2
+psycopg2-binary
