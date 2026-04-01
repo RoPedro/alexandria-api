@@ -5,6 +5,7 @@ Revises: f5aa3b34a828
 Create Date: 2026-03-26 13:53:25.387561
 
 """
+
 from typing import Sequence, Union
 
 from alembic import op
@@ -12,8 +13,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '3091d6e2083b'
-down_revision: Union[str, Sequence[str], None] = 'f5aa3b34a828'
+revision: str = "3091d6e2083b"
+down_revision: Union[str, Sequence[str], None] = "f5aa3b34a828"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -31,4 +32,5 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     """Downgrade schema."""
+    op.drop_table("authors")
     pass
