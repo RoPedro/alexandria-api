@@ -23,8 +23,8 @@ def upgrade() -> None:
     op.create_table(
         "authors",
         sa.Column("id", sa.Integer, primary_key=True),
-        sa.Column("firstname", sa.String(100), unique=True),
-        sa.Column("lastname", sa.String(100), unique=True),
+        sa.Column("firstname", sa.String(100)),
+        sa.Column("lastname", sa.String(100)),
     )
     pass
 
