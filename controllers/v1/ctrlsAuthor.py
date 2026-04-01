@@ -1,5 +1,6 @@
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from models.v1.author import Author
 import logging
 
@@ -21,8 +22,11 @@ def get(db: Session, author_id: int):
 def add(db: Session, first_name: str, last_name: str):
     author = Author(firstname=first_name, lastname=last_name)
     db.add(author)
-    db.commit()
-    db.refresh(author)
+    try:
+        db.commit()
+        db.refresh(author)
+    except IntegrityError:
+        return None
 
     return author
 

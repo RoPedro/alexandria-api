@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from db.connection import get_db
 from sqlalchemy.orm import Session
 
@@ -24,11 +24,16 @@ def getAuthor(author_id: int, db: Session = Depends(get_db)):
 
 @router.post("/add")
 def authorAdd(data: AuthorSchema.AuthorPost, db: Session = Depends(get_db)):
-    return ctrlsAuthor.add(db, data.firstname, data.lastname)
+    author = ctrlsAuthor.add(db, data.firstname, data.lastname)
+    if author is None:
+        raise HTTPException(status_code=409, detail="Author already exists")
+    return author
 
 
 @router.put("/update/{author_id}")
-def authorUpdate(data: AuthorSchema.Author, author_id: int, db: Session = Depends(get_db)):
+def authorUpdate(
+    data: AuthorSchema.Author, author_id: int, db: Session = Depends(get_db)
+):
     author = ctrlsAuthor.get(db, author_id)
     validate_request_details(author_id, author)
     return ctrlsAuthor.patch(db, author_id, data.firstname, data.lastname)
