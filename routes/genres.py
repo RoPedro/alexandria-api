@@ -15,7 +15,7 @@ def genres():
     return genres
 
 
-@router.get("/{genre_id}")
+@router.get("/{genre_id}", response_model=GenreWithBooks)
 def get(genre_id: int, db: Session = Depends(get_db)):
     genre = ctrlsGenre.get(db, genre_id)
     validate_request_details(genre_id, genre)
