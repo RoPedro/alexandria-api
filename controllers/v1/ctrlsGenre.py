@@ -1,10 +1,11 @@
 import logging
 from sqlalchemy import select, update
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import IntegrityError
 
 from db.connection import engine
 from models.v1.genre import Genre
+from models.v1.book import Book
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +20,12 @@ def getAll():
 
 
 def get(db: Session, genre_id: int):
-    genre = db.get(Genre, genre_id)
+    genre = (
+        db.query(Genre)
+        .options(joinedload(Genre.books))
+        .filter(Genre.id == genre_id)
+        .first()
+    )
     return genre
 
 
@@ -30,7 +36,7 @@ def add(db: Session, genre_name: str):
         db.commit()
         db.refresh(genre)
         return genre
-    except IntegrityError: # Return none in case of duplicate genre_name
+    except IntegrityError:  # Return none in case of duplicate genre_name
         return None
 
 
