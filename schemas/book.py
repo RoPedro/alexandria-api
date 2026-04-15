@@ -1,8 +1,16 @@
 from pydantic import BaseModel
 from datetime import date
 
-from schemas.genre import GenreCreate
 from schemas.author import Author
+
+
+class BookPartial(BaseModel):
+    id: int
+    title: str
+    isbn: str
+
+
+from schemas.genre import GenreCreate # Avoids circular imports
 
 
 class BookBase(BaseModel):
