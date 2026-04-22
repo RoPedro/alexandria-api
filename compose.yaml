@@ -1,0 +1,33 @@
+name: alexandria-deploy
+
+services:
+  api:
+    container_name: alenxandria
+    build: .
+    ports: 
+      - 1234:8000
+    environment:
+      # instead of localhost:5432, use db service name in order
+      # to route docker network.
+      DB_URL: postgresql://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${DB_NAME}
+    command: sh -c "alembic upgrade head && python -m db.seeds && fastapi run"
+    depends_on:
+      - db
+
+  db:
+    container_name: postgres
+    image: postgres:18.3
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+
+  adminer:
+    container_name: adminer
+    image: adminer:5.4.2
+    ports:
+      - 1235:8080
+    depends_on:
+      - db
