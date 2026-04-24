@@ -6,11 +6,20 @@ from schemas.author import Author
 
 class BookPartial(BaseModel):
     id: int
-    title: str
     isbn: str
+    title: str
 
 
-from schemas.genre import GenreCreate # Avoids circular imports
+class BookAdd(BaseModel):
+    isbn: str
+    title: str
+    description: str
+    release_date: date
+    genre_id: int
+    authors: list[int] = []
+
+
+from schemas.genre import GenreCreate  # Avoids circular imports
 
 
 class BookBase(BaseModel):
