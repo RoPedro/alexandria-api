@@ -1,11 +1,11 @@
 import logging
+
 from sqlalchemy import select, update
-from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session, joinedload
 
 from db.connection import engine
 from models.v1.genre import Genre
-from models.v1.book import Book
 
 logger = logging.getLogger(__name__)
 

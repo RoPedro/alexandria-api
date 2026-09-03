@@ -1,9 +1,11 @@
 import logging
 from datetime import date
-from sqlalchemy.orm import Session
+
 from sqlalchemy.exc import IntegrityError
-from models.v1.book import Book
+from sqlalchemy.orm import Session
+
 from models.v1.authorBook import authorBook
+from models.v1.book import Book
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +41,7 @@ def add(
     try:
         db.commit()
         db.refresh(book)
-        for author_id in authors: # db.execute accpets insert, add_all does not.
+        for author_id in authors:  # db.execute accpets insert, add_all does not.
             db.execute(authorBook.insert().values(author_id=author_id, book_id=book.id))
         db.commit()
     except IntegrityError:

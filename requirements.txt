@@ -4,3 +4,5 @@ sqlalchemy-utils
 pytest
 alembic
 psycopg2-binary
+httpx2
+black

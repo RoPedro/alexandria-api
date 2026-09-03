@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
-from db.connection import get_db
 from sqlalchemy.orm import Session
 
 from controllers.v1 import ctrlsBook
-from schemas.book import BookBase, BookAdd
+from db.connection import get_db
+from schemas.book import BookAdd, BookBase
+
 from .utils import validate_request_details
 
 router = APIRouter(prefix="/books", tags=["books"])

@@ -4,9 +4,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
+from db.connection import get_db
 from main import app
 from models.v1.dec_base import Base
-from db.connection import get_db
 
 SQLITE_URL = "sqlite://"  # in-memory
 
@@ -20,9 +20,9 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engin
 
 @pytest.fixture(autouse=True)
 def test_api():
-    Base.metadata.create_all(bind=engine)   # create tables
+    Base.metadata.create_all(bind=engine)  # create tables
     yield
-    Base.metadata.drop_all(bind=engine)     # clean up after each test
+    Base.metadata.drop_all(bind=engine)  # clean up after each test
 
 
 @pytest.fixture(scope="module")

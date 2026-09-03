@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
-from db.connection import get_db
 from sqlalchemy.orm import Session
 
 from controllers.v1 import ctrlsGenre
+from db.connection import get_db
 from schemas.genre import *
+
 from .utils import validate_request_details
 
 router = APIRouter(prefix="/genres", tags=["genres"])

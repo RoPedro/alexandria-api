@@ -1,8 +1,10 @@
-from sqlalchemy import select, update
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
-from models.v1.author import Author
 import logging
+
+from sqlalchemy import select, update
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
+
+from models.v1.author import Author
 
 logger = logging.getLogger(__name__)
 

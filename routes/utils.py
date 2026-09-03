@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 
 
+
 def validate_request_details(entity_id, entity_data):
     if not entity_data:
         raise HTTPException(status_code=404, detail="Entity not found in the database")

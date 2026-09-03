@@ -2,8 +2,8 @@ from datetime import date
 
 from sqlalchemy.orm import Session
 
-from models.v1 import Genre, Author, Book
 from db.connection import engine
+from models.v1 import Author, Book, Genre
 
 # WARNING: If you want to move the seeds arrays like genresList to
 # another file, understand that a simple import should not work.

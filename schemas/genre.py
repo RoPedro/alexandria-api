@@ -5,7 +5,7 @@ class GenreCreate(BaseModel):
     name: str
 
 
-from schemas.book import BookPartial # Avoids circular imports
+from schemas.book import BookPartial  # Avoids circular imports
 
 
 class GenreWithBooks(BaseModel):
