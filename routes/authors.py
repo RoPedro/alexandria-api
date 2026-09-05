@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from sqlalchemy.orm import Session
 
 import schemas.author as AuthorSchema
-from controllers.v1 import ctrlsAuthor
+from src.controllers.v1 import ctrlsAuthor
 
 from .utils import session_object, validate_request_details
 

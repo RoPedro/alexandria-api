@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from sqlalchemy.orm import Session
 
-from controllers.v1 import ctrlsBook
+from src.controllers.v1 import ctrlsBook
 from schemas.book import BookAdd, BookBase
 
 from .utils import session_object, validate_request_details

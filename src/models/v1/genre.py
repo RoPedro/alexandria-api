@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
-from models.v1.dec_base import Base
+from src.models.v1.dec_base import Base
 
 
 class Genre(Base):

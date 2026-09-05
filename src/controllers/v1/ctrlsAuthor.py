@@ -4,7 +4,7 @@ from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from models.v1.author import Author
+from src.models.v1.author import Author
 
 logger = logging.getLogger(__name__)
 

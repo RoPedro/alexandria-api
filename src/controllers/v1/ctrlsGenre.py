@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, joinedload
 
 from db.connection import engine
-from models.v1.genre import Genre
+from src.models.v1.genre import Genre
 
 logger = logging.getLogger(__name__)
 

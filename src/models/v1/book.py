@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from models.v1.authorBook import authorBook
-from models.v1.dec_base import Base
+from src.models.v1.authorBook import authorBook
+from src.models.v1.dec_base import Base
 
 
 class Book(Base):

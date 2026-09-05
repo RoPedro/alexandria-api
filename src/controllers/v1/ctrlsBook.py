@@ -4,8 +4,8 @@ from datetime import date
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from models.v1.authorBook import authorBook
-from models.v1.book import Book
+from src.models.v1.authorBook import authorBook
+from src.models.v1.book import Book
 
 logger = logging.getLogger(__name__)
 

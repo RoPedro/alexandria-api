@@ -1,6 +1,6 @@
 from sqlalchemy import Column, ForeignKey, Table
 
-from models.v1.dec_base import Base
+from src.models.v1.dec_base import Base
 
 authorBook = Table(
     "authorBooks",
