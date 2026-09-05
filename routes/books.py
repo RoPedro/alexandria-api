@@ -1,30 +1,29 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from sqlalchemy.orm import Session
 
 from controllers.v1 import ctrlsBook
-from db.connection import get_db
 from schemas.book import BookAdd, BookBase
 
-from .utils import validate_request_details
+from .utils import session_object, validate_request_details
 
 router = APIRouter(prefix="/books", tags=["books"])
 
 
 @router.get("/", response_model=list[BookBase])
-def getAll(db: Session = Depends(get_db)):
+def getAll(db: Session = session_object):
     books = ctrlsBook.getAll(db)
     return books
 
 
 @router.get("/{book_id}", response_model=BookBase)
-def getBook(book_id: int, db: Session = Depends(get_db)):
+def getBook(book_id: int, db: Session = session_object):
     book = ctrlsBook.get(book_id, db)
     validate_request_details(book_id, book)
     return book
 
 
 @router.post("/add")
-def addBook(data: BookAdd, db: Session = Depends(get_db)):
+def addBook(data: BookAdd, db: Session = session_object):
     book = ctrlsBook.add(
         db,
         data.isbn,

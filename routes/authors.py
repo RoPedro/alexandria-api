@@ -1,30 +1,29 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from sqlalchemy.orm import Session
 
 import schemas.author as AuthorSchema
 from controllers.v1 import ctrlsAuthor
-from db.connection import get_db
 
-from .utils import validate_request_details
+from .utils import session_object, validate_request_details
 
 router = APIRouter(prefix="/authors", tags=["authors"])
 
 
 @router.get("/")
-def getAll(db: Session = Depends(get_db)):
+def getAll(db: Session = session_object):
     authors = ctrlsAuthor.getAll(db)
     return authors
 
 
 @router.get("/{author_id}")
-def getAuthor(author_id: int, db: Session = Depends(get_db)):
+def getAuthor(author_id: int, db: Session = session_object):
     author = ctrlsAuthor.get(db, author_id)
     validate_request_details(author_id, author)
     return author
 
 
 @router.post("/add")
-def authorAdd(data: AuthorSchema.AuthorPost, db: Session = Depends(get_db)):
+def authorAdd(data: AuthorSchema.AuthorPost, db: Session = session_object):
     author = ctrlsAuthor.add(db, data.firstname, data.lastname)
     if author is None:
         raise HTTPException(status_code=409, detail="Author already exists")
@@ -33,7 +32,7 @@ def authorAdd(data: AuthorSchema.AuthorPost, db: Session = Depends(get_db)):
 
 @router.put("/update/{author_id}")
 def authorUpdate(
-    data: AuthorSchema.Author, author_id: int, db: Session = Depends(get_db)
+    data: AuthorSchema.Author, author_id: int, db: Session = session_object
 ):
     author = ctrlsAuthor.get(db, author_id)
     validate_request_details(author_id, author)
@@ -41,7 +40,7 @@ def authorUpdate(
 
 
 @router.delete("/delete/{author_id}")
-def authorDelete(author_id: int, db: Session = Depends(get_db)):
+def authorDelete(author_id: int, db: Session = session_object):
     author = ctrlsAuthor.get(db, author_id)
     validate_request_details(author_id, author)
     return ctrlsAuthor.remove(db, author_id)

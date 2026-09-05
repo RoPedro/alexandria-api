@@ -1,5 +1,8 @@
-from fastapi import HTTPException
+from fastapi import Depends, HTTPException
 
+from db.connection import get_db
+
+session_object = Depends(get_db)
 
 
 def validate_request_details(entity_id, entity_data):
