@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from src.models.v1.authorBook import authorBook
+from src.models.v1.author_book import authorBook
 from src.models.v1.dec_base import Base
 
 
