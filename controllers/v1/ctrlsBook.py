@@ -28,7 +28,7 @@ def add(
     description: str,
     release_date: date,
     genre_id: int,
-    authors: list[int] = [],
+    authors: list[int],
 ):
     book = Book(
         isbn=isbn,
@@ -41,6 +41,7 @@ def add(
     try:
         db.commit()
         db.refresh(book)
+
         for author_id in authors:  # db.execute accpets insert, add_all does not.
             db.execute(authorBook.insert().values(author_id=author_id, book_id=book.id))
         db.commit()
