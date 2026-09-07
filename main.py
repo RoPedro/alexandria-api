@@ -1,9 +1,14 @@
 import logging
-from fastapi import FastAPI, APIRouter
+
+from fastapi import APIRouter, FastAPI
 
 from routes import (
     authors as routerAuthors,
+)
+from routes import (
     books as routerBooks,
+)
+from routes import (
     genres as routerGenres,
 )
 

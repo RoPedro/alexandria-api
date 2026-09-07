@@ -6,6 +6,7 @@ class Author(BaseModel):
     firstname: str
     lastname: str
 
+
 class AuthorPost(BaseModel):
     firstname: str
     lastname: str

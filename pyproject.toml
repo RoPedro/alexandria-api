@@ -1,13 +1,20 @@
 [project]
 name = "alexandria-api"
 version = "0.0.1"
-authors = [
-  { name="Pedro Moreira", email="pedro.lucas.rocha72@gmail.com" },
-]
+authors = [{ name = "Pedro Moreira", email = "pedro.lucas.rocha72@gmail.com" }]
 description = ""
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+  "fastapi[standard]",
+  "sqlalchemy",
+  "sqlalchemy-utils",
+  "pytest",
+  "alembic",
+  "psycopg2-binary",
+  "httpx2",
+  "black",
+]
 
 [project.urls]
 Homepage = "https://github.com/RoPedro/alexandria-api"

@@ -1,6 +1,11 @@
 ## Alexandria API: What it is?
 A backend system built on top of [FastAPI](https://fastapi.tiangolo.com/) that serves as a virtual library for any frontend system to work with.
 
+## Instructions
+1. `python -m venv venv` (Create a virtual environment)
+2. `pip install -r requirements.txt` (Install dependencies)
+3. `alembic upgrade head` (Migrate the database)
+
 ## Why it exists?
 This repository is how I centralize most of my learnings in backend architecture. Everytime I want to learn a new backend concept, I try to implement it here first.
 
