@@ -9,13 +9,13 @@ from .utils import session_object, validate_request_details
 router = APIRouter(prefix="/authors", tags=["authors"])
 
 
-@router.get("/")
+@router.get("/", response_model=list[AuthorSchema.Author])
 def getAll(db: Session = session_object):
     authors = ctrls_author.getAll(db)
     return authors
 
 
-@router.get("/{author_id}")
+@router.get("/{author_id}", response_model=AuthorSchema.Author)
 def getAuthor(author_id: int, db: Session = session_object):
     author = ctrls_author.get(db, author_id)
     validate_request_details(author_id, author)
