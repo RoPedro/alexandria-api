@@ -8,10 +8,9 @@
             "name": "Python Debugger: FastAPI",
             "type": "debugpy",
             "request": "launch",
-            "module": "uvicorn",
+            "module": "fastapi",
             "args": [
-                "main:app",
-                "--reload"
+                "dev",
             ],
             "cwd": "${workspaceFolder}/backend",
             "jinja": true
