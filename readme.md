@@ -2,9 +2,11 @@
 A backend system built on top of [FastAPI](https://fastapi.tiangolo.com/) that serves as a virtual library for any frontend system to work with.
 
 ## Instructions
-1. `python -m venv venv` (Create a virtual environment)
-2. `pip install -r requirements.txt` (Install dependencies)
-3. `alembic upgrade head` (Migrate the database)
+All backend code lives in `backend/`.
+1. `cd backend`
+2. `python -m venv venv` (Create a virtual environment)
+3. `pip install -r requirements.txt` (Install dependencies)
+4. `alembic upgrade head` (Migrate the database)
 
 ## Why it exists?
 This repository is how I centralize most of my learnings in backend architecture. Everytime I want to learn a new backend concept, I try to implement it here first.
@@ -26,6 +28,6 @@ CRUD for author, genre, book and user entities with simple validation checks
 - Better testing framework.
 
 ## Container/Docker support
-- `Dockerfile` provides good support for PAAS like Railway, Heroku and Render;
-- `build.sh` will build and run the image from the `Dockerfile`, useful for testing;
-- `compose.yaml` also builds the image, but additionally, links a PostgreSQL database and a Adminer container for database editing.
+- `backend/Dockerfile` provides good support for PAAS like Railway, Heroku and Render;
+- `backend/build.sh` will build and run the image from the `Dockerfile`, useful for testing;
+- `compose.yaml` (repo root) builds from `backend/`, and additionally links a PostgreSQL database and a Adminer container for database editing.

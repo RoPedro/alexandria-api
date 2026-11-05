@@ -13,7 +13,7 @@ load_dotenv()
 
 db_url = getenv("DB_URL", default="")
 if db_url == "":
-    db_url = f"sqlite:///{Path.cwd()}/db/bookapi-fast.db"
+    db_url = f"sqlite:///{Path(__file__).parent}/bookapi-fast.db"
 
 print(db_url)
 

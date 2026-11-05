@@ -3,9 +3,12 @@ name: alexandria-deploy
 services:
   api:
     container_name: alenxandria
-    build: .
+    build:
+      context: backend
     ports: 
       - 1234:8000
+    env_file:
+      - backend/.env
     environment:
       # instead of localhost:5432, use db service name in order
       # to route docker network.
