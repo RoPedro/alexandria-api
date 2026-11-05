@@ -6,3 +6,5 @@ alembic
 psycopg2-binary
 httpx2
 black
+uvicorn
+opentelemetry-distro
