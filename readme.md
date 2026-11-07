@@ -8,6 +8,12 @@ All backend code lives in `backend/`.
 3. `pip install -r requirements.txt` (Install dependencies)
 4. `alembic upgrade head` (Migrate the database)
 
+## Frontend
+Lives in `frontend/` (React + TypeScript + Vite), see `frontend/AGENTS.md` for details.
+1. `cd frontend`
+2. `npm install`
+3. `npm run dev` (serves on :5173, proxies `/api` to the backend on :8000)
+
 ## Why it exists?
 This repository is how I centralize most of my learnings in backend architecture. Everytime I want to learn a new backend concept, I try to implement it here first.
 
