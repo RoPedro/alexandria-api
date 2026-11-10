@@ -36,3 +36,10 @@ def addBook(data: BookAdd, db: Session = session_object):
     if book is None:
         raise HTTPException(status_code=409, detail="Book already exists")
     return book
+
+
+@router.delete("/delete/{book_id}")
+def bookDelete(book_id: int, db: Session = session_object):
+    selected_book = ctrls_book.get(book_id, db)
+    validate_request_details(book_id, selected_book)
+    return ctrls_book.remove(db, book_id)

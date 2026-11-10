@@ -50,7 +50,7 @@ def add(
     return book
 
 
-def delete(db: Session, book_id: int):
+def remove(db: Session, book_id: int):
     book = db.get(Book, book_id)
     if book is None:
         return None
