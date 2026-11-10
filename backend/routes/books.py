@@ -1,4 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from typing import Annotated
+
+from fastapi import APIRouter, Form, HTTPException
 from sqlalchemy.orm import Session
 
 from schemas.book import BookAdd, BookBase
@@ -23,7 +25,7 @@ def getBook(book_id: int, db: Session = session_object):
 
 
 @router.post("/add")
-def addBook(data: BookAdd, db: Session = session_object):
+def addBook(data: Annotated[BookAdd, Form()], db: Session = session_object):
     book = ctrls_book.add(
         db,
         data.isbn,

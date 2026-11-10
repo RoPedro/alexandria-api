@@ -1,4 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from typing import Annotated
+
+from fastapi import APIRouter, Form, HTTPException
 from sqlalchemy.orm import Session
 
 import schemas.author as AuthorSchema
@@ -23,18 +25,22 @@ def getAuthor(author_id: int, db: Session = session_object):
 
 
 @router.post("/add")
-def authorAdd(data: AuthorSchema.AuthorPost, db: Session = session_object):
+def authorAdd(
+    data: Annotated[AuthorSchema.AuthorPost, Form()], db: Session = session_object
+):
     author = ctrls_author.add(db, data.firstname, data.lastname)
     if author is None:
         raise HTTPException(status_code=409, detail="Author already exists")
     return author
 
 
-@router.put("/update/{author_id}")
+@router.put("/update")
 def authorUpdate(
-    data: AuthorSchema.Author, author_id: int, db: Session = session_object
+    data: Annotated[AuthorSchema.Author, Form()], db: Session = session_object
 ):
+    author_id = data.id
     author = ctrls_author.get(db, author_id)
+
     validate_request_details(author_id, author)
     return ctrls_author.patch(db, author_id, data.firstname, data.lastname)
 

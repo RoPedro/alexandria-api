@@ -1,7 +1,16 @@
 from pydantic import BaseModel
 
 
+class GenreID(BaseModel):  # Used for DELETE ops
+    genre_id: int
+
+
 class GenreCreate(BaseModel):
+    name: str
+
+
+class GenrePatchForm(BaseModel):
+    genre_id: int
     name: str
 
 

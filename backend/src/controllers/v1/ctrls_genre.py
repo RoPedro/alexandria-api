@@ -15,7 +15,7 @@ def getAll():
     stmt = select(Genre)
     genres = session.execute(stmt).scalars().all()
 
-    logger.debug(f"DEBUG: ALL GENRES{genres}")
+    logger.debug(f"DEBUG: Loaded {len(genres)}")
     return genres
 
 

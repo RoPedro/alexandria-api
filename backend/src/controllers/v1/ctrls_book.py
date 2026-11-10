@@ -17,7 +17,7 @@ def getAll(db: Session):
 
 def get(book_id: int, db: Session):
     book = db.get(Book, book_id)
-    print(book)
+    # print(book)
     return book
 
 
