@@ -1,5 +1,5 @@
 import type { Author, AuthorPost } from '../types/author'
-import { del, postJson, putJson, request } from './client'
+import { del, postForm, putForm, request } from './client'
 
 export function listAuthors(): Promise<Author[]> {
   return request<Author[]>('/authors/')
@@ -10,11 +10,18 @@ export function getAuthor(id: number): Promise<Author> {
 }
 
 export function createAuthor(body: AuthorPost): Promise<unknown> {
-  return postJson('/authors/add', body)
+  const form = new FormData()
+  form.set('firstname', body.firstname)
+  form.set('lastname', body.lastname)
+  return postForm('/authors/add', form)
 }
 
-export function updateAuthor(id: number, body: Author): Promise<unknown> {
-  return putJson(`/authors/update/${id}`, body)
+export function updateAuthor(body: Author): Promise<unknown> {
+  const form = new FormData()
+  form.set('id', String(body.id))
+  form.set('firstname', body.firstname)
+  form.set('lastname', body.lastname)
+  return putForm('/authors/update', form)
 }
 
 export function deleteAuthor(id: number): Promise<unknown> {

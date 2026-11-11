@@ -1,5 +1,5 @@
-import type { Genre, GenreWithBooks } from '../types/genre'
-import { del, postJson, putJson, request } from './client'
+import type { Genre, GenreID, GenreWithBooks } from '../types/genre'
+import { del, postForm, putForm, request } from './client'
 
 export function listGenres(): Promise<Genre[]> {
   return request<Genre[]>('/genres/')
@@ -10,13 +10,18 @@ export function getGenre(id: number): Promise<GenreWithBooks> {
 }
 
 export function createGenre(body: { name: string }): Promise<unknown> {
-  return postJson('/genres/add', body)
+  const form = new FormData()
+  form.set('name', body.name)
+  return postForm('/genres/add', form)
 }
 
 export function updateGenre(id: number, body: { name: string }): Promise<unknown> {
-  return putJson(`/genres/update/${id}`, body)
+  const form = new FormData()
+  form.set('genre_id', String(id))
+  form.set('name', body.name)
+  return putForm('/genres/update', form)
 }
 
-export function deleteGenre(id: number): Promise<unknown> {
-  return del(`/genres/delete/${id}`)
+export function deleteGenre(id: number): Promise<GenreID> {
+  return del<GenreID>(`/genres/delete/${id}`)
 }

@@ -13,7 +13,7 @@
 - `src/components/ui/` — shared primitives (Button, Drawer, ConfirmDialog, states)
 - `src/components/database/` — Database panel pieces: tabs, expandable table, entity details, forms, views
 - `src/pages/` — panel screens (`DatabasePage` is the first); `App.tsx` switches panels with `useState` (no router)
-- `src/api/` — typed client for the backend; always call it through `/api`, never absolute URLs
+- `src/api/` — typed client for the backend; mutations send `FormData` (backend routes take FastAPI `Form()`), never raw JSON; always call it through `/api`, never absolute URLs
 - `src/types/` — shared TypeScript types mirroring backend schemas
 - `src/hooks/` — shared React hooks (`useEntityList`)
 - `src/styles/` — `tokens.css` (semantic colors/spacing from `DESIGN.md`) plus shell/components/database CSS, imported by `index.css`

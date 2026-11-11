@@ -33,7 +33,7 @@ export function AuthorForm({ initial, onSuccess }: AuthorFormProps) {
     setSubmitting(true)
     try {
       if (initial) {
-        await updateAuthor(initial.id, {
+        await updateAuthor({
           id: initial.id,
           firstname: firstname.trim(),
           lastname: lastname.trim(),

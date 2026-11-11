@@ -5,6 +5,10 @@ export interface Genre {
   name: string
 }
 
+export interface GenreID {
+  genre_id: number
+}
+
 export interface GenreWithBooks {
   id: number
   name: string

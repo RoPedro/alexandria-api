@@ -1,10 +1,12 @@
+import type { ReactNode } from 'react'
 import type { Book } from '../../../types/book'
 
 interface BookDetailProps {
   book: Book
+  actions?: ReactNode
 }
 
-export function BookDetail({ book }: BookDetailProps) {
+export function BookDetail({ book, actions }: BookDetailProps) {
   const authorNames = book.authors.map(
     (author) => `${author.firstname} ${author.lastname}`,
   )
@@ -43,6 +45,7 @@ export function BookDetail({ book }: BookDetailProps) {
         <h3>Description</h3>
         <p className="detail__description">{book.description}</p>
       </div>
+      {actions && <div className="detail__actions">{actions}</div>}
     </div>
   )
 }

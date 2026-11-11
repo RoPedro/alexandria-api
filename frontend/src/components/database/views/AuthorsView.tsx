@@ -90,6 +90,7 @@ export function AuthorsView() {
         variant: 'error',
         text: err instanceof ApiError ? err.message : 'Unexpected error',
       })
+      reload()
       return false
     }
   }

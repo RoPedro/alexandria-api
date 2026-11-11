@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { getBook, listBooks } from '../../../api/books'
+import { deleteBook, getBook, listBooks } from '../../../api/books'
 import { useEntityList } from '../../../hooks/useEntityList'
 import type { Book } from '../../../types/book'
 import { ApiError } from '../../../types/errors'
 import { Button } from '../../ui/Button'
+import { ConfirmDialog } from '../../ui/ConfirmDialog'
 import { Drawer } from '../../ui/Drawer'
 import { StatusMessage } from '../../ui/StatusMessage'
 import type { DetailState } from '../detailState'
@@ -28,6 +29,7 @@ export function BooksView() {
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [detail, setDetail] = useState<DetailState<Book>>(idleDetail<Book>)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [confirmTarget, setConfirmTarget] = useState<Book | null>(null)
   const [status, setStatus] = useState<Status>(null)
 
   const normalizedQuery = query.trim().toLowerCase()
@@ -76,6 +78,25 @@ export function BooksView() {
     reload()
   }
 
+  const runMutation = async (
+    action: () => Promise<unknown>,
+    successText: string,
+  ): Promise<boolean> => {
+    try {
+      await action()
+      setStatus({ variant: 'success', text: successText })
+      reload()
+      return true
+    } catch (err) {
+      setStatus({
+        variant: 'error',
+        text: err instanceof ApiError ? err.message : 'Unexpected error',
+      })
+      reload()
+      return false
+    }
+  }
+
   const countLabel = normalizedQuery
     ? `${filtered.length} of ${rows.length} books`
     : `${rows.length} ${rows.length === 1 ? 'book' : 'books'}`
@@ -99,7 +120,19 @@ export function BooksView() {
         renderDetail={(book) => {
           const data = detail.status === 'ready' ? detail.data : null
           if (!data || data.id !== book.id) return null
-          return <BookDetail book={data} />
+          return (
+            <BookDetail
+              book={data}
+              actions={
+                <Button
+                  variant="destructive"
+                  onClick={() => setConfirmTarget(data)}
+                >
+                  Delete
+                </Button>
+              }
+            />
+          )
         }}
         searchLabel="Search books"
         searchPlaceholder="Search books"
@@ -133,6 +166,31 @@ export function BooksView() {
       >
         <BookForm onSuccess={onCreated} />
       </Drawer>
+
+      <ConfirmDialog
+        open={confirmTarget !== null}
+        title="Delete book"
+        message={
+          confirmTarget
+            ? `Delete ${confirmTarget.title}? This removes the book record from the database.`
+            : ''
+        }
+        confirmLabel="Delete book"
+        onCancel={() => setConfirmTarget(null)}
+        onConfirm={async () => {
+          const target = confirmTarget
+          setConfirmTarget(null)
+          if (!target) return
+          const ok = await runMutation(
+            () => deleteBook(target.id),
+            'Book deleted',
+          )
+          if (ok && expandedId === target.id) {
+            setExpandedId(null)
+            setDetail(idleDetail<Book>())
+          }
+        }}
+      />
     </>
   )
 }
