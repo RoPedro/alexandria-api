@@ -14,6 +14,16 @@ Lives in `frontend/` (React + TypeScript + Vite), see `frontend/AGENTS.md` for d
 2. `npm install`
 3. `npm run dev` (serves on :5173, proxies `/api` to the backend on :8000)
 
+## Stress testing
+`gatling/` holds a [Gatling](https://gatling.io) load test (Maven project, Java 21 — both pinned in `mise.toml`).
+1. `cd gatling`
+2. `mvn gatling:test` (needs the backend running on :8000)
+
+- Default load: 100 requests/second for 30 seconds, split between the list routes (`getAll`) and the by-id routes (`getEntity`);
+- Tunable with `-Drps=200 -Dduration=60 -DbaseUrl=http://host:8000`;
+- The by-id routes are fuzzed with float, int, char, string and special-character parameters (SQL injection, path traversal, XSS, encoded payloads); a run fails if any request answers 5xx or times out;
+- HTML reports are written to `gatling/target/gatling/`.
+
 ## Why it exists?
 This repository is how I centralize most of my learnings in backend architecture. Everytime I want to learn a new backend concept, I try to implement it here first.
 
