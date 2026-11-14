@@ -21,8 +21,8 @@
 
 ## Docker
 - Multi-stage: `node:24-alpine` builds `dist/`, `nginx:alpine` serves it
-- Build context is `frontend/` (root `compose.yaml` references it when the frontend service is added)
-- `nginx.conf`: SPA fallback (`try_files`) and `/api/` reverse-proxied to `http://api:8000` (compose service name); the upstream resolves at request time via Docker DNS (`resolver 127.0.0.11`), so nginx boots even when the `api` service is down — standalone, `/api` returns 502 by design
+- Build context is `frontend/`; the root `compose.yaml` builds it as `frontend_service` (published on `:5173`)
+- `nginx.conf`: SPA fallback (`try_files`) and `/api/` reverse-proxied to `http://api_service:8000` (compose service name); the upstream resolves at request time via Docker DNS (`resolver 127.0.0.11`), so nginx boots even when the `api_service` is down — standalone, `/api` returns 502 by design
 
 ## Rules for agents
 - Do not modify `backend/` from this directory; cross-directory changes need an explicit request

@@ -1,36 +1,64 @@
 name: alexandria-deploy
 
+x-service-limits: &service-limits
+  deploy:
+    resources:
+      limits:
+        cpus: "1"
+        memory: 1.5G
+
 services:
-  api:
-    container_name: alenxandria
+  db_service:
+    container_name: db_service
+    image: postgres:18.3
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-alexandria}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-alexandria}
+      POSTGRES_DB: ${DB_NAME:-alexandria}
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${DB_USERNAME:-alexandria} -d ${DB_NAME:-alexandria}
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    <<: *service-limits
+
+  api_service:
+    container_name: api_service
     build:
       context: backend
-    ports: 
-      - 1234:8000
     env_file:
-      - backend/.env
+      - backend/.envexample
     environment:
-      # instead of localhost:5432, use db service name in order
-      # to route docker network.
-      DB_URL: postgresql://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${DB_NAME}
+      # instead of localhost:5432, use the db service name in order
+      # to route through the docker network.
+      # the psycopg2 dialect is required: the image installs psycopg2-binary,
+      # while plain postgresql:// makes SQLAlchemy look for psycopg (v3).
+      DB_URL: postgresql+psycopg2://${DB_USERNAME:-alexandria}:${DB_PASSWORD:-alexandria}@db_service:5432/${DB_NAME:-alexandria}
     command: sh -c "alembic upgrade head && python -m db.seeds && fastapi run"
-    depends_on:
-      - db
-
-  db:
-    container_name: postgres
-    image: postgres:18.3
     ports:
-      - 5432:5432
-    environment:
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
-
-  adminer:
-    container_name: adminer
-    image: adminer:5.4.2
-    ports:
-      - 1235:8080
+      - "8000:8000"
     depends_on:
-      - db
+      db_service:
+        condition: service_healthy
+    <<: *service-limits
+
+  frontend_service:
+    container_name: frontend_service
+    build:
+      context: frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - api_service
+    <<: *service-limits
+
+volumes:
+  db_data:

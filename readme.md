@@ -46,4 +46,4 @@ CRUD for author, genre, book and user entities with simple validation checks
 ## Container/Docker support
 - `backend/Dockerfile` provides good support for PAAS like Railway, Heroku and Render;
 - `backend/build.sh` will build and run the image from the `Dockerfile`, useful for testing;
-- `compose.yaml` (repo root) builds from `backend/`, and additionally links a PostgreSQL database and a Adminer container for database editing.
+- `compose.yaml` (repo root) brings the whole stack up with `docker compose up --build`: `db_service` (PostgreSQL, on `:5432`), `api_service` (FastAPI, on `:8000`, migrations + seeds on boot) and `frontend_service` (nginx, on `:5173`). Database credentials come from `DB_USERNAME` / `DB_PASSWORD` / `DB_NAME` (defaults: `alexandria`), overridable in a root `.env` file; the backend reads its other variables from `backend/.envexample`. Each service is capped at 1 vCPU and 1.5 GB of RAM.
