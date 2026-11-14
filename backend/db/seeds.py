@@ -14,6 +14,10 @@ from src.models.v1.genre import Genre
 # waste time trying to move those variables out unless there's a
 # clear plan to how to refactor it.
 with Session(bind=engine) as session:
+    if session.query(Genre).count() > 0:
+        print("Database already seeded, skipping.")
+        raise SystemExit(0)
+
     genresList = [
         Genre(name="fantasy"),
         Genre(name="sci-fi"),
