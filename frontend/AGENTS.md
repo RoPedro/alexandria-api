@@ -9,15 +9,18 @@
 - `npm run preview` — serves the production build locally
 
 ## Structure
-- `src/components/shell/` — app shell: header, sidebar, workspace layout
+- `src/components/shell/` — app shell: header (account controls), sidebar, workspace layout
 - `src/components/ui/` — shared primitives (Button, Drawer, ConfirmDialog, states)
+- `src/components/auth/` — authentication UI (sign in / create account drawer)
 - `src/components/database/` — Database panel pieces: tabs, expandable table, entity details, forms, views
 - `src/pages/` — panel screens (`DatabasePage` is the first); `App.tsx` switches panels with `useState` (no router)
 - `src/api/` — typed client for the backend; mutations send `FormData` (backend routes take FastAPI `Form()`), never raw JSON; always call it through `/api`, never absolute URLs
+- `src/auth/` — session state: `AuthProvider` (context), `useAuth()` hook, role-aware session storage in `storage.ts`; see `docs/ARCHITECTURE.md`
 - `src/types/` — shared TypeScript types mirroring backend schemas
 - `src/hooks/` — shared React hooks (`useEntityList`)
 - `src/styles/` — `tokens.css` (semantic colors/spacing from `DESIGN.md`) plus shell/components/database CSS, imported by `index.css`
 - Mutations must refetch lists (backend create/update responses are often empty)
+- Admin-only controls are rendered **disabled with an explanation**, never hidden (`DESIGN.md`); the API client also refuses mutating calls for a non-admin session
 
 ## Docker
 - Multi-stage: `node:24-alpine` builds `dist/`, `nginx:alpine` serves it

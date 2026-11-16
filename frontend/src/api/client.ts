@@ -1,6 +1,20 @@
 import { ApiError } from '../types/errors'
+import { clearSession, readSession } from '../auth/storage'
 
 const BASE = '/api/v1'
+
+/** Fired when the API rejects a stored session, so the UI can drop it. */
+export const SESSION_EXPIRED_EVENT = 'alexandria:session-expired'
+
+const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS'])
+
+export interface RequestOptions {
+  /**
+   * Endpoints that must stay reachable without an admin session (sign in,
+   * register). Every other mutating call is refused client-side.
+   */
+  skipAdminCheck?: boolean
+}
 
 interface DetailHolder {
   detail?: unknown
@@ -34,10 +48,30 @@ function messageFromDetail(
 export async function request<T>(
   path: string,
   init: RequestInit = {},
+  options: RequestOptions = {},
 ): Promise<T> {
+  const method = (init.method ?? 'GET').toUpperCase()
+
+  // Guardrail: a session that is not an admin never issues a mutating call.
+  // The API rejects it with 403 anyway; refusing here keeps the UI honest.
+  if (!SAFE_METHODS.has(method) && !options.skipAdminCheck) {
+    const session = readSession()
+    if (!session || session.user.role !== 'admin') {
+      throw new ApiError(
+        403,
+        'Administrator access is required for this action. Sign in as an administrator.',
+      )
+    }
+  }
+
   const headers = new Headers(init.headers)
   if (typeof init.body === 'string' && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json')
+  }
+
+  const session = readSession()
+  if (session && !headers.has('Authorization')) {
+    headers.set('Authorization', `Bearer ${session.token}`)
   }
 
   let response: Response
@@ -56,6 +90,13 @@ export async function request<T>(
     } catch {
       detail = undefined
     }
+
+    if (response.status === 401 && session) {
+      // The stored session is no longer valid: drop it and let the app know.
+      clearSession()
+      window.dispatchEvent(new Event(SESSION_EXPIRED_EVENT))
+    }
+
     throw new ApiError(
       response.status,
       messageFromDetail(detail, response.status, raw),
@@ -73,14 +114,22 @@ export async function request<T>(
   return JSON.parse(text) as T
 }
 
-export function postForm<T>(path: string, body: FormData): Promise<T> {
-  return request<T>(path, { method: 'POST', body })
+export function postForm<T>(
+  path: string,
+  body: FormData,
+  options: RequestOptions = {},
+): Promise<T> {
+  return request<T>(path, { method: 'POST', body }, options)
 }
 
-export function putForm<T>(path: string, body: FormData): Promise<T> {
-  return request<T>(path, { method: 'PUT', body })
+export function putForm<T>(
+  path: string,
+  body: FormData,
+  options: RequestOptions = {},
+): Promise<T> {
+  return request<T>(path, { method: 'PUT', body }, options)
 }
 
-export function del<T>(path: string): Promise<T> {
-  return request<T>(path, { method: 'DELETE' })
+export function del<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  return request<T>(path, { method: 'DELETE' }, options)
 }

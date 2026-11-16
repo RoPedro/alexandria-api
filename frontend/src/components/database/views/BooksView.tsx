@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { deleteBook, getBook, listBooks } from '../../../api/books'
 import { useEntityList } from '../../../hooks/useEntityList'
+import { useAuth } from '../../../auth/useAuth'
+import { ADMIN_REQUIRED_HINT, READ_ONLY_NOTE } from '../../../auth/permissions'
 import type { Book } from '../../../types/book'
 import { ApiError } from '../../../types/errors'
 import { Button } from '../../ui/Button'
@@ -25,6 +27,7 @@ const COLUMNS: Column<Book>[] = [
 
 export function BooksView() {
   const { rows, loading, error, reload } = useEntityList(listBooks)
+  const { isAdmin } = useAuth()
   const [query, setQuery] = useState('')
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [detail, setDetail] = useState<DetailState<Book>>(idleDetail<Book>)
@@ -126,6 +129,8 @@ export function BooksView() {
               actions={
                 <Button
                   variant="destructive"
+                  disabled={!isAdmin}
+                  title={!isAdmin ? ADMIN_REQUIRED_HINT : undefined}
                   onClick={() => setConfirmTarget(data)}
                 >
                   Delete
@@ -139,9 +144,12 @@ export function BooksView() {
         query={query}
         onQueryChange={setQuery}
         countLabel={countLabel}
+        permissionNote={isAdmin ? undefined : READ_ONLY_NOTE}
         primaryAction={
           <Button
             variant="primary"
+            disabled={!isAdmin}
+            title={!isAdmin ? ADMIN_REQUIRED_HINT : undefined}
             onClick={() => {
               setStatus(null)
               setDrawerOpen(true)

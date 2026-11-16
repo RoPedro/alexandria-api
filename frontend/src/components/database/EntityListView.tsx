@@ -26,6 +26,8 @@ interface EntityListViewProps<T> {
   onQueryChange: (value: string) => void
   countLabel: string
   primaryAction: ReactNode
+  /** Explains why the write controls are unavailable, when they are. */
+  permissionNote?: ReactNode
 
   loading: boolean
   error: string | null
@@ -54,6 +56,7 @@ export function EntityListView<T>({
   onQueryChange,
   countLabel,
   primaryAction,
+  permissionNote,
   loading,
   error,
   onRetry,
@@ -69,6 +72,11 @@ export function EntityListView<T>({
 
   return (
     <div className="entity-view">
+      {permissionNote && (
+        <p className="permission-note" role="note">
+          {permissionNote}
+        </p>
+      )}
       <div className="entity-toolbar">
         <div className="entity-toolbar__search">
           <label className="visually-hidden" htmlFor="entity-search">

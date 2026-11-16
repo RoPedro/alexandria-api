@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { deleteGenre, getGenre, listGenres } from '../../../api/genres'
 import { useEntityList } from '../../../hooks/useEntityList'
+import { useAuth } from '../../../auth/useAuth'
+import { ADMIN_REQUIRED_HINT, READ_ONLY_NOTE } from '../../../auth/permissions'
 import type { Genre, GenreWithBooks } from '../../../types/genre'
 import { ApiError } from '../../../types/errors'
 import { Button } from '../../ui/Button'
@@ -28,6 +30,7 @@ const COLUMNS: Column<Genre>[] = [
 
 export function GenresView() {
   const { rows, loading, error, reload } = useEntityList(listGenres)
+  const { isAdmin } = useAuth()
   const [query, setQuery] = useState('')
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const [detail, setDetail] = useState<DetailState<GenreWithBooks>>(
@@ -139,11 +142,17 @@ export function GenresView() {
               genre={data}
               actions={
                 <>
-                  <Button onClick={() => setDrawer({ open: true, edit: data })}>
+                  <Button
+                    disabled={!isAdmin}
+                    title={!isAdmin ? ADMIN_REQUIRED_HINT : undefined}
+                    onClick={() => setDrawer({ open: true, edit: data })}
+                  >
                     Edit
                   </Button>
                   <Button
                     variant="destructive"
+                    disabled={!isAdmin}
+                    title={!isAdmin ? ADMIN_REQUIRED_HINT : undefined}
                     onClick={() => setConfirmTarget(data)}
                   >
                     Delete
@@ -158,9 +167,12 @@ export function GenresView() {
         query={query}
         onQueryChange={setQuery}
         countLabel={countLabel}
+        permissionNote={isAdmin ? undefined : READ_ONLY_NOTE}
         primaryAction={
           <Button
             variant="primary"
+            disabled={!isAdmin}
+            title={!isAdmin ? ADMIN_REQUIRED_HINT : undefined}
             onClick={() => {
               setStatus(null)
               setDrawer({ open: true })
