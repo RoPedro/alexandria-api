@@ -1,4 +1,6 @@
 fastapi[standard]
+pyjwt
+pwdlib[argon2]
 sqlalchemy
 sqlalchemy-utils
 pytest

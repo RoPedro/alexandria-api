@@ -4,3 +4,24 @@ OTEL_EXPORTER_OTLP_ENDPOINT=
 OTEL_EXPORTER_OTLP_HEADERS=
 OTEL_LOG_LEVEL=INFO
 DB_URL=
+
+# --- Authentication ------------------------------------------------------------
+# Secret used to sign the session tokens. Leave it empty and the app generates a
+# random one at boot (every session then dies on restart). Set it in a real
+# deployment.
+JWT_SECRET_KEY=
+JWT_ALGORITHM=HS256
+
+# Session lifetimes.
+# Regular users: 30 days.
+ACCESS_TOKEN_EXPIRE_MINUTES=43200
+# Administrators: 8 hours, and never past midnight in ADMIN_TIMEZONE.
+ADMIN_SESSION_HOURS=8
+ADMIN_EXPIRE_AT_MIDNIGHT=true
+ADMIN_TIMEZONE=UTC
+
+# --- First administrator ------------------------------------------------------
+# Used only when the database has no administrator yet. An administrator can
+# create further accounts from the API afterwards.
+ADMIN_USERNAME=
+ADMIN_PASSWORD=

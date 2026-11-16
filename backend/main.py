@@ -6,6 +6,9 @@ from routes import (
     authors as routerAuthors,
 )
 from routes import (
+    auth as routerAuth,
+)
+from routes import (
     books as routerBooks,
 )
 from routes import (
@@ -28,5 +31,6 @@ apiRouter = APIRouter()
 apiRouter.include_router(routerBooks.router)
 apiRouter.include_router(routerAuthors.router)
 apiRouter.include_router(routerGenres.router)
+apiRouter.include_router(routerAuth.router)
 
 app.include_router(apiRouter, prefix=apiVer1)

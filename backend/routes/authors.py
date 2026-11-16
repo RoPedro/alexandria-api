@@ -1,10 +1,12 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Form, HTTPException
+from fastapi import APIRouter, Depends, Form, HTTPException
 from sqlalchemy.orm import Session
 
 import schemas.author as AuthorSchema
 from src.controllers.v1 import ctrls_author
+from src.dependencies.auth import require_admin
+from src.models.v1.user import User
 
 from .utils import session_object, validate_request_details
 
@@ -26,7 +28,9 @@ def getAuthor(author_id: int, db: Session = session_object):
 
 @router.post("/add")
 def authorAdd(
-    data: Annotated[AuthorSchema.AuthorPost, Form()], db: Session = session_object
+    data: Annotated[AuthorSchema.AuthorPost, Form()],
+    db: Session = session_object,
+    admin: User = Depends(require_admin),
 ):
     author = ctrls_author.add(db, data.firstname, data.lastname)
     if author is None:
@@ -36,7 +40,9 @@ def authorAdd(
 
 @router.put("/update")
 def authorUpdate(
-    data: Annotated[AuthorSchema.Author, Form()], db: Session = session_object
+    data: Annotated[AuthorSchema.Author, Form()],
+    db: Session = session_object,
+    admin: User = Depends(require_admin),
 ):
     author_id = data.id
     author = ctrls_author.get(db, author_id)
@@ -46,7 +52,11 @@ def authorUpdate(
 
 
 @router.delete("/delete/{author_id}")
-def authorDelete(author_id: int, db: Session = session_object):
+def authorDelete(
+    author_id: int,
+    db: Session = session_object,
+    admin: User = Depends(require_admin),
+):
     author = ctrls_author.get(db, author_id)
     validate_request_details(author_id, author)
     return ctrls_author.remove(db, author_id)

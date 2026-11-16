@@ -1,10 +1,12 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Form, HTTPException
+from fastapi import APIRouter, Depends, Form, HTTPException
 from sqlalchemy.orm import Session
 
 from schemas.book import BookAdd, BookBase
 from src.controllers.v1 import ctrls_book
+from src.dependencies.auth import require_admin
+from src.models.v1.user import User
 
 from .utils import session_object, validate_request_details
 
@@ -25,7 +27,11 @@ def getBook(book_id: int, db: Session = session_object):
 
 
 @router.post("/add")
-def addBook(data: Annotated[BookAdd, Form()], db: Session = session_object):
+def addBook(
+    data: Annotated[BookAdd, Form()],
+    db: Session = session_object,
+    admin: User = Depends(require_admin),
+):
     book = ctrls_book.add(
         db,
         data.isbn,
@@ -41,7 +47,11 @@ def addBook(data: Annotated[BookAdd, Form()], db: Session = session_object):
 
 
 @router.delete("/delete/{book_id}")
-def bookDelete(book_id: int, db: Session = session_object):
+def bookDelete(
+    book_id: int,
+    db: Session = session_object,
+    admin: User = Depends(require_admin),
+):
     selected_book = ctrls_book.get(book_id, db)
     validate_request_details(book_id, selected_book)
     return ctrls_book.remove(db, book_id)

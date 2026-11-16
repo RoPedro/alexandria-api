@@ -1,3 +1,9 @@
+import os
+
+# Keep the OpenTelemetry exporter out of the test run: it would try to ship
+# metrics to the configured collector and drown the test output in noise.
+os.environ.setdefault("FASTAPI_OTEL_AUTO_CONFIGURE", "false")
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -6,7 +12,10 @@ from sqlalchemy.pool import StaticPool
 
 from db.connection import get_db
 from main import app
-from src.models.v1.dec_base import Base
+from src.models.v1 import Base  # noqa: F401 - imports every model, so create_all sees them
+from src.models.v1.user import Role
+from src.security import tokens
+from src.controllers.v1 import ctrls_user
 
 SQLITE_URL = "sqlite://"  # in-memory
 
@@ -25,7 +34,7 @@ def test_api():
     Base.metadata.drop_all(bind=engine)  # clean up after each test
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def client():
     def override_get_db():
         db = TestingSessionLocal()
@@ -35,5 +44,32 @@ def client():
             db.close()
 
     app.dependency_overrides[get_db] = override_get_db
-    yield TestClient(app)
+    with TestClient(app) as test_client:
+        yield test_client
     app.dependency_overrides.clear()
+
+
+def _create_account(username: str, role: str) -> dict:
+    """Insert an account straight into the database and return its auth header."""
+    db = TestingSessionLocal()
+    try:
+        user = ctrls_user.add(db, username, "password123", role)
+        assert user is not None
+        token = tokens.create_access_token(
+            user.id, user.username, tokens.user_token_expiry()
+        )
+    finally:
+        db.close()
+    return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+def admin_headers():
+    """Authorization header for an admin account."""
+    return _create_account("admin", Role.ADMIN)
+
+
+@pytest.fixture
+def user_headers():
+    """Authorization header for a regular (non-admin) account."""
+    return _create_account("reader", Role.USER)

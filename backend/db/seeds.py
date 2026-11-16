@@ -3,16 +3,23 @@ from datetime import date
 from sqlalchemy.orm import Session
 
 from db.connection import engine
+from db.create_admin import ensure_bootstrap_admin
 from src.models.v1.author import Author
 from src.models.v1.book import Book
 from src.models.v1.genre import Genre
+
+# The first admin cannot be created by an admin, so it is bootstrapped from the
+# environment (ADMIN_USERNAME / ADMIN_PASSWORD) when there is no admin yet.
+# It runs before the seed guard so a redeploy on an already seeded database
+# still bootstraps the admin.
+ensure_bootstrap_admin()
 
 # WARNING: If you want to move the seeds arrays like genresList to
 # another file, understand that a simple import should not work.
 # the reason is that the id variable has value == None, it only has
 # a value after, for example, "session.add_all(genresList)", do not
 # waste time trying to move those variables out unless there's a
-# clear plan to how to refactor it.
+# clear plan of how to refactor it.
 with Session(bind=engine) as session:
     if session.query(Genre).count() > 0:
         print("Database already seeded, skipping.")

@@ -7,6 +7,8 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
   "fastapi[standard]",
+  "pyjwt",
+  "pwdlib[argon2]",
   "sqlalchemy",
   "sqlalchemy-utils",
   "pytest",
