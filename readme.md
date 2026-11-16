@@ -7,6 +7,13 @@ All backend code lives in `backend/`.
 2. `python -m venv venv` (Create a virtual environment)
 3. `pip install -r requirements.txt` (Install dependencies)
 4. `alembic upgrade head` (Migrate the database)
+5. `ADMIN_USERNAME=root ADMIN_PASSWORD=secret python -m db.create_admin` (Create the first administrator — there is no public route that can grant admin rights)
+
+## Authentication
+- Every `GET` route is public; `POST`, `PUT` and `DELETE` require an administrator session;
+- Sessions are JWT bearer tokens (HS256). An administrator session expires at the earlier of 8 hours and midnight (`ADMIN_SESSION_HOURS`, `ADMIN_TIMEZONE`); a regular user session lasts 30 days (`ACCESS_TOKEN_EXPIRE_MINUTES`);
+- Guests register themselves with a username and a password and get a read-only account; an administrator creates other administrators from `POST /api/v1/auth/users`;
+- See [`backend/docs/ARCHITECTURE.md`](backend/docs/ARCHITECTURE.md) for the model and [`/docs/THINKER.md`](docs/THINKER.md) for the options that were considered.
 
 ## Frontend
 Lives in `frontend/` (React + TypeScript + Vite), see `frontend/AGENTS.md` for details.
@@ -34,16 +41,18 @@ The main dependencies being used are:
 - SQLAlchemy: ORM for database connection and manipulation;
 - Alembic: Migration database system for reproducible deploys;
 - PyTest + SQLite: For automated tests and development database, respectively;
-- PostgreSQL: Production database.
+- PostgreSQL: Production database;
+- PyJWT + pwdlib (Argon2id): Session tokens and password hashing.
 
 ## What it currently does?
-CRUD for author, genre, book and user entities with simple validation checks
+CRUD for author, genre, book and user entities with simple validation checks, plus JWT authentication and route protection (reads are public, writes need an administrator).
 
 ## What will still be implemented?
-- Authentication and Route protection: The next big update, routes like DELETE will be protected by JWT Auth.
+- Rate limiting on the login and registration endpoints.
+- A user management screen in the frontend for the admin-only account endpoints.
 - Better testing framework.
 
 ## Container/Docker support
 - `backend/Dockerfile` provides good support for PAAS like Railway, Heroku and Render;
 - `backend/build.sh` will build and run the image from the `Dockerfile`, useful for testing;
-- `compose.yaml` (repo root) brings the whole stack up with `docker compose up --build`: `db_service` (PostgreSQL, on `:5432`), `api_service` (FastAPI, on `:8000`, migrations + seeds on boot) and `frontend_service` (nginx, on `:5173`). Database credentials come from `DB_USERNAME` / `DB_PASSWORD` / `DB_NAME` (defaults: `alexandria`), overridable in a root `.env` file; the backend reads its other variables from `backend/.envexample`. Each service is capped at 1 vCPU and 1.5 GB of RAM.
+- `compose.yaml` (repo root) brings the whole stack up with `docker compose up --build`: `db_service` (PostgreSQL, on `:5432`), `api_service` (FastAPI, on `:8000`, migrations + seeds on boot) and `frontend_service` (nginx, on `:5173`). Database credentials come from `DB_USERNAME` / `DB_PASSWORD` / `DB_NAME` (defaults: `alexandria`), overridable in a root `.env` file; the backend reads its other variables from `backend/.envexample`. Set `ADMIN_USERNAME` and `ADMIN_PASSWORD` in `backend/.envexample` before the first boot to create the initial administrator (the seeding step creates it when the database has no admin yet). Each service is capped at 1 vCPU and 1.5 GB of RAM.
